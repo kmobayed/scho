@@ -43,7 +43,6 @@ public class Main {
         J.addsites();
         System.out.println("DONE");
 
-
         J.listSites();
         System.out.println("===========");
 //        J.listStatements();
@@ -61,7 +60,7 @@ public class Main {
             o.print();
         }
 
-        String date=FCS.getDate();
+        String date= FCS.getDate(); ////
         Date D;
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));

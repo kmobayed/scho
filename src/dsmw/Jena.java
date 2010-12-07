@@ -553,14 +553,15 @@ public class Jena {
         ArrayList<ChangeSet> parents = this.getPreviousCS(CSid);
         if (this.inPullFeed(parents.get(0),D))
         {
-        this.publishChangeSet(parents.get(0));
-        parents = this.getPreviousCS(parents.get(0).getChgSetID());
+            this.publishChangeSet(parents.get(0));
+            parents = this.getPreviousCS(parents.get(0).getChgSetID());
         }
         else 
-        {
-            this.publishChangeSet(parents.get(1));
-            parents = this.getPreviousCS(parents.get(1).getChgSetID());
-        }
+        if (parents.size()>1)
+                {
+                    this.publishChangeSet(parents.get(1));
+                    parents = this.getPreviousCS(parents.get(1).getChgSetID());
+                }
         while (parents.size()>0)
         {
             this.publishChangeSet(parents.get(0));
