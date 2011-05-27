@@ -166,7 +166,6 @@ public class Main {
         J.dump();
         J.close();
         out.close();
-        
         System.out.println("Total ontology population time :"+ (endTime-startTime));
     }
 
