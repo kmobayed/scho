@@ -14,6 +14,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Main {
 
@@ -25,13 +26,13 @@ public class Main {
     {
         if (args.length<4)
         {
-                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file> <log>");
+                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file>");
                 System.exit(0);
         }
 
         long startTime = System.currentTimeMillis();
         String DBdirectory = args[0] ;
-        Git G = new Git();
+        LogParser G = new LogParser();
         Jena J= new Jena(DBdirectory);
 
         System.out.print("Loading ChangeSets and adding PullFeeds ... ");
@@ -41,12 +42,12 @@ public class Main {
         dateFormatJena="yyyy-MM-dd'T'HH:mm:ss'Z'";
         if (logtype.equalsIgnoreCase("git"))
         {
-            G.gitLog(J,GIT_LOG);
+            G.Parse(J,GIT_LOG);
             
         }
         else
         {
-            G.gitLog(J,Mercurial_LOG);
+            G.Parse(J,Mercurial_LOG);
         }
         
         System.out.println("DONE");
@@ -97,8 +98,8 @@ public class Main {
 
     public static void calculateDA(Jena J, String[] args) throws ParseException, FileNotFoundException, IOException
     {
-        String logoutput= args[4];
-        FileHandler hand = new FileHandler("out.log");
+        FileHandler hand = new FileHandler(args[3]);
+        hand.setFormatter(new LoggingSimpleFormatter());
         Logger log = Logger.getLogger("scho_log");
         log.addHandler(hand);
         LogRecord rec2 =null;
@@ -115,8 +116,8 @@ public class Main {
 
         ArrayList <ChangeSet> AL2=new ArrayList <ChangeSet>();
         boolean more=true;
-        FileOutputStream fos = new FileOutputStream(args[3]);
-        PrintWriter out = new PrintWriter(fos);
+//        FileOutputStream fos = new FileOutputStream(args[3]);
+//        PrintWriter out = new PrintWriter(fos);
 
         while (more)
         {
@@ -124,7 +125,7 @@ public class Main {
             System.out.println("Divergence awareness at " + cal.getTime().toString());
             int RM=0;
             int LM=0;
-            // calculate divergence in time t
+            // calculate divergence at time t
             for (ChangeSet o : AL2)
             {
                 //o.print();
@@ -176,15 +177,15 @@ public class Main {
             if (RM>0) System.out.println("Remotely Modified = "+RM);
             if (LM>0) System.out.println("Locally Modified = "+LM);
             if (LM==0 && RM==0) System.out.println("Up-to-date");
-            if (logoutput.equalsIgnoreCase("debug"))
-            {
-                rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
-                hand.publish(rec2);
-            }
-            out.print(cal.getTime().getTime()+"\t"+LM+"\t"+RM+"\n");
+//            if (logoutput.equalsIgnoreCase("debug"))
+//            {
+            rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
+            hand.publish(rec2);
+//            }
+//            out.print(cal.getTime().getTime()+"\t"+LM+"\t"+RM+"\n");
             cal.add(Calendar.SECOND, step);
         }
         hand.close();
-        out.close();
+//        out.close();
     }
 }
