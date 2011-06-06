@@ -1,8 +1,10 @@
 package scho;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,19 +21,13 @@ public class Main {
     public static final boolean Mercurial_LOG=false;
     public static String cmd,dateFormatLog,dateFormatJena;
 
-        public static void main( String[] args ) throws IOException, Exception
+    public static void main( String[] args ) throws IOException, ParseException
     {
         if (args.length<4)
         {
                 System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file> <log>");
                 System.exit(0);
         }
-
-        String logoutput= args[4];
-        FileHandler hand = new FileHandler("out.log", true);
-        Logger log = Logger.getLogger("scho_log");
-        log.addHandler(hand);
-        LogRecord rec2 =null;
 
         long startTime = System.currentTimeMillis();
         String DBdirectory = args[0] ;
@@ -63,10 +59,19 @@ public class Main {
         J.addsites();
         System.out.println("DONE");
         long endTime = System.currentTimeMillis();
-        J.listSites();
+        //J.listSites();
+        System.out.println("Ontology population time :"+ (endTime-startTime));
         System.out.println("===========");
+        //print project stats #commit #sites #merge #duration
 
-        ChangeSet FCS=J.getFirstCS();
+
+        startTime = System.currentTimeMillis();
+        Main.calculateDA(J,args);
+        endTime = System.currentTimeMillis();
+        System.out.println("Divergence awareness calcualtion time :"+ (endTime-startTime));
+        //J.dump();
+        J.close();
+
 //        System.out.print("First CS: ");
 //        FCS.print();
 //
@@ -77,7 +82,27 @@ public class Main {
 //        {
 //            o.print();
 //        }
+// TO jump to next CS date
+//            if (!J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).isEmpty())
+//            {
+//                date=J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).get(0).getDate();
+//                sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//                sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));
+//                D = sdf1.parse(date);
+//                cal.setTime(D);
+//            }
+//            else
+        
+    }
 
+    public static void calculateDA(Jena J, String[] args) throws ParseException, FileNotFoundException, IOException
+    {
+        String logoutput= args[4];
+        FileHandler hand = new FileHandler("out.log");
+        Logger log = Logger.getLogger("scho_log");
+        log.addHandler(hand);
+        LogRecord rec2 =null;
+        ChangeSet FCS=J.getFirstCS();
         String date= FCS.getDate(); ////for cakePHP "2009-01-01T00:00:00Z";//
         Date D;
         SimpleDateFormat sdf1 = new SimpleDateFormat(dateFormatJena);
@@ -92,15 +117,13 @@ public class Main {
         boolean more=true;
         FileOutputStream fos = new FileOutputStream(args[3]);
         PrintWriter out = new PrintWriter(fos);
-        
+
         while (more)
         {
             AL2=J.getCStillDate(cal.getTime());
             System.out.println("Divergence awareness at " + cal.getTime().toString());
             int RM=0;
             int LM=0;
-
-
             // calculate divergence in time t
             for (ChangeSet o : AL2)
             {
@@ -150,35 +173,18 @@ public class Main {
                 else System.out.println("published : "+o.getChgSetID());
             }
 
-// TO jump to next CS date
-//            if (!J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).isEmpty())
-//            {
-//                date=J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).get(0).getDate();
-//                sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//                sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));
-//                D = sdf1.parse(date);
-//                cal.setTime(D);
-//            }
-//            else
-                
-                if (RM>0) System.out.println("Remotely Modified = "+RM);
-                if (LM>0) System.out.println("Locally Modified = "+LM);
-                if (LM==0 && RM==0) System.out.println("Up-to-date");
-                if (logoutput.equalsIgnoreCase("true"))
-                {
-                    rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
-                    hand.publish(rec2);
-                }
-                out.print(cal.getTime().getTime()+"\t"+LM+"\t"+RM+"\n");
-
-                cal.add(Calendar.SECOND, step);
-
+            if (RM>0) System.out.println("Remotely Modified = "+RM);
+            if (LM>0) System.out.println("Locally Modified = "+LM);
+            if (LM==0 && RM==0) System.out.println("Up-to-date");
+            if (logoutput.equalsIgnoreCase("debug"))
+            {
+                rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
+                hand.publish(rec2);
+            }
+            out.print(cal.getTime().getTime()+"\t"+LM+"\t"+RM+"\n");
+            cal.add(Calendar.SECOND, step);
         }
-        J.dump();
-        J.close();
         hand.close();
         out.close();
-        System.out.println("Total ontology population time :"+ (endTime-startTime));
     }
-
 }
