@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 public class Main {
 
@@ -19,10 +23,15 @@ public class Main {
     {
         if (args.length<4)
         {
-                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file>");
+                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file> <log>");
                 System.exit(0);
         }
 
+        String logoutput= args[4];
+        FileHandler hand = new FileHandler("out.log", true);
+        Logger log = Logger.getLogger("scho_log");
+        log.addHandler(hand);
+        LogRecord rec2 =null;
 
         long startTime = System.currentTimeMillis();
         String DBdirectory = args[0] ;
@@ -56,8 +65,6 @@ public class Main {
         long endTime = System.currentTimeMillis();
         J.listSites();
         System.out.println("===========");
-//        J.listStatements();
-//        System.out.println("===========");
 
         ChangeSet FCS=J.getFirstCS();
 //        System.out.print("First CS: ");
@@ -157,7 +164,11 @@ public class Main {
                 if (RM>0) System.out.println("Remotely Modified = "+RM);
                 if (LM>0) System.out.println("Locally Modified = "+LM);
                 if (LM==0 && RM==0) System.out.println("Up-to-date");
-
+                if (logoutput.equalsIgnoreCase("true"))
+                {
+                    rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
+                    hand.publish(rec2);
+                }
                 out.print(cal.getTime().getTime()+"\t"+LM+"\t"+RM+"\n");
 
                 cal.add(Calendar.SECOND, step);
@@ -165,6 +176,7 @@ public class Main {
         }
         J.dump();
         J.close();
+        hand.close();
         out.close();
         System.out.println("Total ontology population time :"+ (endTime-startTime));
     }
