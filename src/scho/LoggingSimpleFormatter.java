@@ -65,7 +65,7 @@ public class LoggingSimpleFormatter extends SimpleFormatter {
   public synchronized String format(LogRecord record) {
     try {
       StringBuilder sb = new StringBuilder();
-      StringBuilder text = new StringBuilder();
+//      StringBuilder text = new StringBuilder();
       if (formatter == null) {
         formatter = new MessageFormat(format);
       }
