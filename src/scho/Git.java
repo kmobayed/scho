@@ -28,7 +28,7 @@ public class Git {
         
         if (gitLog)
         {
-            cmd = "git log --abbrev-commit --parents  --pretty=format:%h%n%p%nci";
+            cmd = "git log --abbrev-commit --parents  --pretty=format:%h%n%p%n%ci";
 
         }
         else
