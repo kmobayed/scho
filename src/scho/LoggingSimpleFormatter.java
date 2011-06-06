@@ -61,10 +61,11 @@ public class LoggingSimpleFormatter extends SimpleFormatter {
    *@param  record  the log record to be formatted.
    *@return         a formatted log record
    */
+    @Override
   public synchronized String format(LogRecord record) {
     try {
-      StringBuffer sb = new StringBuffer();
-      StringBuffer text = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
+      StringBuilder text = new StringBuilder();
       if (formatter == null) {
         formatter = new MessageFormat(format);
       }
@@ -105,7 +106,7 @@ public class LoggingSimpleFormatter extends SimpleFormatter {
       try {
         sb.append(formatMessage(record));
       } catch (Throwable t5) {
-        sb.append("Error formatting record message" + newLineString() + t5.toString());
+                sb.append("Error formatting record message").append(newLineString()).append(t5.toString());
       }
       sb.append(newLineString());
 //      try {
