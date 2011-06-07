@@ -23,7 +23,7 @@ public class Main {
     {
         if (args.length<4)
         {
-                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file>");
+                System.err.println("Usage: java -jar scho.jar <TDB folder> <step in seconds> <log_type> <output_file> [start_date]");
                 System.exit(0);
         }
 
@@ -71,8 +71,15 @@ public class Main {
         Logger log = Logger.getLogger("scho_log");
         log.addHandler(hand);
         LogRecord rec2 =null;
-        ChangeSet FCS=J.getFirstCS();
-        String date= FCS.getDate(); ////for cakePHP "2009-01-01T00:00:00Z";//
+        String date;
+        if (args.length==5)
+        {
+            date=args[4];
+        }else
+        {
+            ChangeSet FCS=J.getFirstCS();
+            date = FCS.getDate(); ////for cakePHP "2009-01-01T00:00:00Z";//
+        }
         Date D;
         SimpleDateFormat sdf1 = new SimpleDateFormat(dateFormatJena);
         sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));
