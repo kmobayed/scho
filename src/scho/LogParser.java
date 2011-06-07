@@ -131,7 +131,7 @@ public class LogParser {
                 cmd1 = "git show --abbrev-commit --parents --format=%h%n%p%n%s" +CS;
             }
             else
-                cmd1 = "/usr/local/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n"+CS;
+                cmd1 = "/usr/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n"+CS;
 
             Process p = Runtime.getRuntime().exec(cmd1);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
