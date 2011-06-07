@@ -1,9 +1,7 @@
 package scho;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Main {
 
@@ -49,51 +46,22 @@ public class Main {
         {
             G.Parse(J,Mercurial_LOG);
         }
-        
         System.out.println("DONE");
-
         System.out.print("Adding PushFeeds ... ");
         J.addPushFeeds();
         System.out.println("DONE");
-
-        System.out.print("Adding Sites ... ");
-        J.addsites();
-        System.out.println("DONE");
         long endTime = System.currentTimeMillis();
-        //J.listSites();
-        System.out.println("Ontology population time :"+ (endTime-startTime));
+        System.out.println("Ontology population time (seconds):"+ (endTime-startTime)/1000);
         System.out.println("===========");
         //print project stats #commit #sites #merge #duration
-
 
         startTime = System.currentTimeMillis();
         Main.calculateDA(J,args);
         endTime = System.currentTimeMillis();
-        System.out.println("Divergence awareness calcualtion time :"+ (endTime-startTime));
+        System.out.println("Divergence awareness calcualtion time (seconds):"+ (endTime-startTime)/1000);
         //J.dump();
         J.close();
 
-//        System.out.print("First CS: ");
-//        FCS.print();
-//
-//        ArrayList <ChangeSet> AL1=new ArrayList <ChangeSet>();
-//        AL1=J.getNextCS(FCS.getChgSetID());
-//        System.out.println("Second CSs?: ");
-//        for (ChangeSet o:AL1)
-//        {
-//            o.print();
-//        }
-// TO jump to next CS date
-//            if (!J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).isEmpty())
-//            {
-//                date=J.getNextCS(AL2.get(AL2.size()-1).getChgSetID()).get(0).getDate();
-//                sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//                sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));
-//                D = sdf1.parse(date);
-//                cal.setTime(D);
-//            }
-//            else
-        
     }
 
     public static void calculateDA(Jena J, String[] args) throws ParseException, FileNotFoundException, IOException

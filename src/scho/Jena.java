@@ -568,8 +568,4 @@ public class Jena {
         }
     }
 
-    void addsites()
-    {
-
-    }
 }

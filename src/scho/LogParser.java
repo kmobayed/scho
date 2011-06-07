@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -114,31 +115,9 @@ public class LogParser {
         }
     }
 
-/**
-    public String gitGetFirstCS()
-    {
-        String out = null;
-        String err=null;
-        try {
-           
-            String cmd1="git log -n 1 --abbrev-commit --pretty=format:%h";
-            
-            Process p = Runtime.getRuntime().exec(cmd1);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            out = stdInput.readLine();
 
-            while ((err = stdError.readLine()) != null) {
-                System.out.print("Error :");
-                System.out.println(err);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(LogParser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return out;
-    }
 
-    public ChangeSet gitGetCSdata(String CS)
+    public ChangeSet GetCSdata(String CS,boolean gitLog)
     {
         ArrayList<String> out = new ArrayList<String>();
         String tmp = null;
@@ -146,7 +125,14 @@ public class LogParser {
         ChangeSet CS1=new ChangeSet();
         try {
            
-            String cmd1 = "git show --abbrev-commit --parents --format=%h%n%p%n%s" +CS;
+            String cmd1 ;
+            if (gitLog)
+            {
+                cmd1 = "git show --abbrev-commit --parents --format=%h%n%p%n%s" +CS;
+            }
+            else
+                cmd1 = "/usr/local/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n"+CS;
+
             Process p = Runtime.getRuntime().exec(cmd1);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -173,119 +159,6 @@ public class LogParser {
         }
         return CS1;
     }
-
-
- public void config() throws IOException, JavaGitException
-    {
-        JavaGitConfiguration.setGitPath(GitBin);
-    }
-
-    public void getVersion() throws JavaGitException
-    {
-
-        System.out.println("LogParser version : "+JavaGitConfiguration.getGitVersion());
-
-    }
-
-    public void getLog() throws JavaGitException, IOException
-    {
-        File repositoryDirectory = new File("/Users/klm/code/cakephp");
-        DotGit dotGit = DotGit.getInstance(repositoryDirectory);
-
-        System.out.println("Log size = "+dotGit.getLog().size())
-                ;
-
-         //Print commit messages of the current branch
-
-        //for (Commit c : dotGit.getLog()) {
-
-        GitLogOptions options=new GitLogOptions();
-        options.setOptOrderingReverse(true);
-        options.setOptLimitFirstParent(true);
-        options.setOptLimitFullHistory(true);
-        //options.set
-
-            Commit c= dotGit.getLog(options).get(0);
-            System.out.println(c.getMessage());
-            System.out.println(c.getAuthor());
-            System.out.println(c.getDateString());
-            System.out.println(c.getFiles());
-            System.out.println(c.getFilesChanged());
-            System.out.println(c.getLinesDeleted());
-            System.out.println(c.getLinesInserted());
-
-            if (c.getMergeDetails()!= null)
-            {
-                Iterator i = c.getMergeDetails().iterator();
-                while (i.hasNext())
-                {
-                    String MD = i.next().toString();
-                    System.out.println("Merge Detail ----"+MD);
-                }
-            }
-
-        //}
-    }
-
-
-    public void gitLogNoMerge(Jena J)
-    {
-        String cmd1="git log --abbrev-commit --parents --no-merges --format=%h%n%p%n%s%n%ci";
-        String CSid = null;
-        String parent = null;
-        String message = null;
-        String date=null;
-        String err = null;
-        ChangeSet CS =null;
-
-        try
-        {
-            Process p = Runtime.getRuntime().exec(cmd1);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            while ((CSid = stdInput.readLine()) != null)
-            {
-                CS=new ChangeSet("CS"+CSid);
-                if ((parent = stdInput.readLine()) !=null)
-                {
-                        if ((!parent.isEmpty())) CS.addPreviousChgSet("CS"+parent);
-                }
-
-                if ((message = stdInput.readLine()) !=null)
-                {
-                    CS.setMessage(message);
-                }
-                if ((date = stdInput.readLine()) !=null)
-                {
-                    Date D;
-                    try {
-                        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-                        sdf1.setTimeZone(TimeZone.getTimeZone("GMT"));
-                        D = sdf1.parse(date);
-                        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                        sdf2.setTimeZone(TimeZone.getTimeZone("GMT"));
-                        date = sdf2.format(D);
-                        CS.setDate(date);
-                    } catch (ParseException ex) {
-                        Logger.getLogger(LogParser.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                J.addChangeSet(CS);
-            }
-
-            while ((err = stdError.readLine()) != null)
-            {
-                System.out.print("Error :");
-                System.out.println(err);
-            }
-
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(LogParser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-*/
 
 
 }
