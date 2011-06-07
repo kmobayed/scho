@@ -17,7 +17,8 @@ public class Main {
 
     public static final boolean GIT_LOG=true;
     public static final boolean Mercurial_LOG=false;
-    public static String cmd,dateFormatLog,dateFormatJena;
+    public static final String dateFormatLog="yyyy-MM-dd HH:mm:ss Z";
+    public static final String dateFormatJena="yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     public static void main( String[] args ) throws IOException, ParseException
     {
@@ -35,8 +36,7 @@ public class Main {
         System.out.print("Loading ChangeSets and adding PullFeeds ... ");
         String logtype= args[2];
 
-        dateFormatLog="yyyy-MM-dd HH:mm:ss Z";
-        dateFormatJena="yyyy-MM-dd'T'HH:mm:ss'Z'";
+        
         if (logtype.equalsIgnoreCase("git"))
         {
             G.Parse(J,GIT_LOG);
@@ -52,8 +52,12 @@ public class Main {
         System.out.println("DONE");
         long endTime = System.currentTimeMillis();
         System.out.println("Ontology population time (seconds):"+ (endTime-startTime)/1000);
-        System.out.println("===========");
+
         //print project stats #commit #sites #merge #duration
+        System.out.println("Number of site(s) = "+J.getSiteCount());
+        System.out.println("Number of commit(s) = "+J.getCommitCount());
+        System.out.println("Number of merge(s) = "+J.getMergeCount());
+        System.out.println("===========");
 
         startTime = System.currentTimeMillis();
         Main.calculateDA(J,args);
@@ -74,11 +78,11 @@ public class Main {
         String date;
         if (args.length==5)
         {
-            date=args[4];
+            date=args[4]; ////for cakePHP "2009-01-01T00:00:00Z";//
         }else
         {
             ChangeSet FCS=J.getFirstCS();
-            date = FCS.getDate(); ////for cakePHP "2009-01-01T00:00:00Z";//
+            date = FCS.getDate(); 
         }
         Date D;
         SimpleDateFormat sdf1 = new SimpleDateFormat(dateFormatJena);

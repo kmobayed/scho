@@ -27,7 +27,7 @@ public class Jena {
     
     public static final String rdfUri  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     public static final String rdfsUri = "http://www.w3.org/2000/01/rdf-schema#";
-    public static final String dsmwUri = "http://www.semanticweb.org/ontologies/2009/4/MS2W.owl#";
+    public static final String schoUri = "http://www.semanticweb.org/ontologies/2009/4/SCHO.owl#";
     public static final String owlUri  = "http://www.w3.org/2002/07/owl#";
     public static final String xsdUri  = "http://www.w3.org/2001/XMLSchema#";
     public static final String foafUri = "http://xmlns.com/foaf/0.1/";
@@ -36,7 +36,7 @@ public class Jena {
                         +"prefix xsd: <http://www.w3.org/2001/XMLSchema#> "
                         +"prefix owl: <http://www.w3.org/2001/XMLSchema#> "
                         +"prefix foaf: <http://xmlns.com/foaf/0.1/> "
-			+"prefix MS2W: <http://www.semanticweb.org/ontologies/2009/4/MS2W.owl#> ";
+			+"prefix SCHO: <http://www.semanticweb.org/ontologies/2009/4/SCHO.owl#> ";
 
     public Jena(String DB)
     {
@@ -79,72 +79,72 @@ public class Jena {
 
     public void addSite(Site S)
     {
-        this.addStatement(dsmwUri+S.getSiteID(), rdfUri+"type", dsmwUri+"Site");
+        this.addStatement(schoUri+S.getSiteID(), rdfUri+"type", schoUri+"Site");
     }
 
     public void addDocument(Document D)
     {
-        this.addStatement(dsmwUri+D.getDocID(), rdfUri+"type", dsmwUri+"Document");
-        this.addStatement(dsmwUri+D.getDocID(), dsmwUri+"head", dsmwUri+D.getHead().getPatchID());
-        this.addStatement(dsmwUri+D.getDocID(), dsmwUri+"onSite", dsmwUri+D.getSite().getSiteID());
+        this.addStatement(schoUri+D.getDocID(), rdfUri+"type", schoUri+"Document");
+        this.addStatement(schoUri+D.getDocID(), schoUri+"head", schoUri+D.getHead().getPatchID());
+        this.addStatement(schoUri+D.getDocID(), schoUri+"onSite", schoUri+D.getSite().getSiteID());
 
     }
 
     public void addOperation(Operation O)
     {
-        this.addStatement(dsmwUri+O.getOpID(), rdfUri+"type", dsmwUri+"Operation");
-        this.addStatement(dsmwUri+O.getPatch().getPatchID(), dsmwUri+"hasOperation", dsmwUri+O.getOpID());
+        this.addStatement(schoUri+O.getOpID(), rdfUri+"type", schoUri+"Operation");
+        this.addStatement(schoUri+O.getPatch().getPatchID(), schoUri+"hasOperation", schoUri+O.getOpID());
     }
 
     public void addPatch(Patch P)
     {
-        this.addStatement(dsmwUri+P.getPatchID(), rdfUri+"type", dsmwUri+"Patch");
-        this.addStatement(dsmwUri+P.getPatchID(), dsmwUri+"onPage", dsmwUri+P.getDoc().getDocID());
-        this.addStatement(dsmwUri+P.getPatchID(), dsmwUri+"previous", dsmwUri+P.getPrevious().getPatchID());
-        this.addStatement(dsmwUri+P.getChgSet().getChgSetID(), dsmwUri+"hasPatch", dsmwUri+P.getPatchID());
+        this.addStatement(schoUri+P.getPatchID(), rdfUri+"type", schoUri+"Patch");
+        this.addStatement(schoUri+P.getPatchID(), schoUri+"onPage", schoUri+P.getDoc().getDocID());
+        this.addStatement(schoUri+P.getPatchID(), schoUri+"previous", schoUri+P.getPrevious().getPatchID());
+        this.addStatement(schoUri+P.getChgSet().getChgSetID(), schoUri+"hasPatch", schoUri+P.getPatchID());
     }
 
     public void addChangeSet(ChangeSet C)
     {
-        this.addStatement(dsmwUri+C.getChgSetID(), rdfUri+"type", dsmwUri+"ChangeSet");
+        this.addStatement(schoUri+C.getChgSetID(), rdfUri+"type", schoUri+"ChangeSet");
         for(Object object : C.getPreviousChgSet())
         {
             String PCS = (String) object;
-            if ((!PCS.isEmpty())) this.addStatement(dsmwUri+C.getChgSetID(), dsmwUri+"previousChangeSet", dsmwUri+PCS);
+            if ((!PCS.isEmpty())) this.addStatement(schoUri+C.getChgSetID(), schoUri+"previousChangeSet", schoUri+PCS);
         }
 
-        this.addLiteralStatement(dsmwUri+C.getChgSetID(), dsmwUri+"date", C.getDate());
+        this.addLiteralStatement(schoUri+C.getChgSetID(), schoUri+"date", C.getDate());
     }
 
     public void publishChangeSet(ChangeSet C)
     {
-        this.addLiteralStatement(dsmwUri+C.getChgSetID(), dsmwUri+"published", "true");
+        this.addLiteralStatement(schoUri+C.getChgSetID(), schoUri+"published", "true");
     }
 
     public void setPullFeed(ChangeSet C, PullFeed F)
     {
-        this.addStatement(dsmwUri+C.getChgSetID(), dsmwUri+"inPullFeed", dsmwUri+F.getPullFeedID());
+        this.addStatement(schoUri+C.getChgSetID(), schoUri+"inPullFeed", schoUri+F.getPullFeedID());
     }
 
     public void setPushFeed(ChangeSet C, PushFeed F)
     {
-        this.addStatement(dsmwUri+C.getChgSetID(), dsmwUri+"inPushFeed", dsmwUri+F.getPushFeedID());
+        this.addStatement(schoUri+C.getChgSetID(), schoUri+"inPushFeed", schoUri+F.getPushFeedID());
     }
     
     public void addPullFeed(PullFeed PF)
     {
-        this.addStatement(dsmwUri+PF.getPullFeedID(), rdfUri+"type", dsmwUri+"PullFeed");
-        this.addStatement(dsmwUri+PF.getPullFeedID(), dsmwUri+"hasPullHead", dsmwUri+PF.getHeadPullFeed());
-      //  this.addStatement(dsmwUri+PF.getPullFeedID(), dsmwUri+"hasRelatedPush", dsmwUri+PF.getRelatedPushFeed().getPushFeedID());
-        this.addStatement(dsmwUri+PF.getSite(), dsmwUri+"hasPull", dsmwUri+PF.getPullFeedID());
+        this.addStatement(schoUri+PF.getPullFeedID(), rdfUri+"type", schoUri+"PullFeed");
+        this.addStatement(schoUri+PF.getPullFeedID(), schoUri+"hasPullHead", schoUri+PF.getHeadPullFeed());
+      //  this.addStatement(schoUri+PF.getPullFeedID(), schoUri+"hasRelatedPush", schoUri+PF.getRelatedPushFeed().getPushFeedID());
+        this.addStatement(schoUri+PF.getSite(), schoUri+"hasPull", schoUri+PF.getPullFeedID());
 
     }
 
     public void addPushFeed(PushFeed PF)
     {
-        this.addStatement(dsmwUri+PF.getPushFeedID(), rdfUri+"type", dsmwUri+"PushFeed");
-        this.addStatement(dsmwUri+PF.getPushFeedID(), dsmwUri+"hasPushHead", dsmwUri+PF.getHeadPushFeed());
-        this.addStatement(dsmwUri+PF.getSite(), dsmwUri+"hasPush", dsmwUri+PF.getPushFeedID());
+        this.addStatement(schoUri+PF.getPushFeedID(), rdfUri+"type", schoUri+"PushFeed");
+        this.addStatement(schoUri+PF.getPushFeedID(), schoUri+"hasPushHead", schoUri+PF.getHeadPushFeed());
+        this.addStatement(schoUri+PF.getSite(), schoUri+"hasPush", schoUri+PF.getPushFeedID());
     }
 
 
@@ -162,7 +162,7 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT DISTINCT ?site WHERE { "
-			+"{?site a MS2W:Site} "
+			+"{?site a SCHO:Site} "
 			+"}";
 
         qe1 = QueryExecutionFactory.create(query1, data);
@@ -173,6 +173,75 @@ public class Jena {
             System.out.print(patch1.getURI()+"\n");
         }
         qe1.close();
+    }
+
+    public int getSiteCount()
+    {
+        String query1;
+        int count=0;
+        QueryExecution qe1;
+        query1=queryPrefix +
+			"SELECT  (COUNT ( DISTINCT ?site ) AS ?count) WHERE { "
+			+"{?site a SCHO:Site} "
+			+"}";
+
+        qe1 = QueryExecutionFactory.create(query1, Syntax.syntaxARQ, data);
+        for (ResultSet rs1 = qe1.execSelect() ; rs1.hasNext() ; )
+        {
+            QuerySolution binding1 = rs1.nextSolution();
+            Literal site1=((Literal) binding1.get("count"));
+            count=site1.getInt();
+
+        }
+        qe1.close();
+        return count;
+    }
+
+    public int getCommitCount()
+    {
+        String query1;
+        int count=0;
+        QueryExecution qe1;
+        query1=queryPrefix +
+			"SELECT  (COUNT ( DISTINCT ?commit ) AS ?count) WHERE { "
+			+"{?commit a SCHO:ChangeSet} "
+			+"}";
+
+        qe1 = QueryExecutionFactory.create(query1, Syntax.syntaxARQ, data);
+        for (ResultSet rs1 = qe1.execSelect() ; rs1.hasNext() ; )
+        {
+            QuerySolution binding1 = rs1.nextSolution();
+            Literal site1=((Literal) binding1.get("count"));
+            count=site1.getInt();
+
+        }
+        qe1.close();
+        return count;
+    }
+
+        public int getMergeCount()
+    {
+        String query1;
+        int count=0;
+        QueryExecution qe1;
+        query1=queryPrefix +
+			"SELECT  (COUNT ( DISTINCT ?cs ) AS ?count) WHERE { "
+			+"{?cs a SCHO:ChangeSet . "
+                        +"?cs SCHO:previousChangeSet ?pcs1 . "
+                        +"?cs SCHO:previousChangeSet ?pcs2 .  }"
+                        +"FILTER (?pcs1 != ?pcs2 ) "
+			+"}";
+
+        qe1 = QueryExecutionFactory.create(query1, Syntax.syntaxARQ, data);
+        for (ResultSet rs1 = qe1.execSelect() ; rs1.hasNext() ; )
+        {
+            QuerySolution binding1 = rs1.nextSolution();
+            Literal site1=((Literal) binding1.get("count"));
+            count=site1.getInt();
+
+        }
+        qe1.close();
+        return count;
     }
 
     public void listStatements()
@@ -202,10 +271,10 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT DISTINCT ?cs ?date WHERE { "
-			+"{?cs a MS2W:ChangeSet ."
-                        + "?cs MS2W:date ?date ."
+			+"{?cs a SCHO:ChangeSet ."
+                        + "?cs SCHO:date ?date ."
                         + "} "
-                        +"OPTIONAL { ?cs MS2W:previousChangeSet ?pcs . }"
+                        +"OPTIONAL { ?cs SCHO:previousChangeSet ?pcs . }"
                         +"FILTER(!bound(?pcs))"
 			+"}";
 
@@ -230,9 +299,9 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT DISTINCT ?cs  ?date WHERE { "
-			+" ?cs a MS2W:ChangeSet ."
-                        +" ?cs MS2W:date ?date ."
-                        +" ?cs MS2W:previousChangeSet MS2W:"+ CS +" . "
+			+" ?cs a SCHO:ChangeSet ."
+                        +" ?cs SCHO:date ?date ."
+                        +" ?cs SCHO:previousChangeSet SCHO:"+ CS +" . "
 			+" }"
                         +" ORDER BY ?date ";
         qe1 = QueryExecutionFactory.create(query1, data);
@@ -259,9 +328,9 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT DISTINCT ?cs  ?date WHERE { "
-			+" ?cs a MS2W:ChangeSet ."
-                        +" ?cs MS2W:date ?date ."
-                        + "MS2W:"+CS+"  MS2W:previousChangeSet ?cs . "
+			+" ?cs a SCHO:ChangeSet ."
+                        +" ?cs SCHO:date ?date ."
+                        + "SCHO:"+CS+"  SCHO:previousChangeSet ?cs . "
 			+" }"
                         +" ORDER BY ?date ";
         qe1 = QueryExecutionFactory.create(query1, data);
@@ -295,10 +364,10 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT ?cs ?date ?pcs ?pub WHERE { "
-			+" ?cs a MS2W:ChangeSet . "
-                        +" ?cs MS2W:date ?date . "
-                        +" OPTIONAL { ?cs MS2W:previousChangeSet ?pcs  } ."
-                        +" OPTIONAL { ?cs MS2W:published ?pub  } ."
+			+" ?cs a SCHO:ChangeSet . "
+                        +" ?cs SCHO:date ?date . "
+                        +" OPTIONAL { ?cs SCHO:previousChangeSet ?pcs  } ."
+                        +" OPTIONAL { ?cs SCHO:published ?pub  } ."
                         +" FILTER ( xsd:dateTime(?date) <= \"" +date+ "\"^^xsd:dateTime )"
 			+" }"
                         +" ORDER BY ?date ";
@@ -354,8 +423,8 @@ public class Jena {
         QueryExecution qe1;
         query1=queryPrefix +
 			"SELECT DISTINCT ?cs ?date WHERE { "
-			+" ?cs a MS2W:ChangeSet . "
-                        +" ?cs MS2W:date ?date . "
+			+" ?cs a SCHO:ChangeSet . "
+                        +" ?cs SCHO:date ?date . "
 			+" }"
                         +" ORDER BY ?date ";
 
@@ -415,8 +484,8 @@ public class Jena {
         {
             query1=queryPrefix +
                             "SELECT ?pf  ?date WHERE { "
-                            +" ?pf MS2W:hasPushHead MS2W:"+CSid+" ."
-                            +" MS2W:"+CSid+" MS2W:date ?date ."
+                            +" ?pf SCHO:hasPushHead SCHO:"+CSid+" ."
+                            +" SCHO:"+CSid+" SCHO:date ?date ."
                             +" FILTER ( xsd:dateTime(?date) <= \"" +date+ "\"^^xsd:dateTime )"
                             +"}";
 
@@ -486,10 +555,10 @@ public class Jena {
         {
             query1=queryPrefix +
                             "SELECT ?pf  WHERE { "
-                            + "?pf MS2W:hasPullHead MS2W:"+CSid+" ."
-                            +" MS2W:"+CSid+" MS2W:date ?date ."
+                            + "?pf SCHO:hasPullHead SCHO:"+CSid+" ."
+                            +" SCHO:"+CSid+" SCHO:date ?date ."
                           //  +" FILTER ( xsd:dateTime(?date) <= \"" +date+ "\"^^xsd:dateTime )"
-                            + " NOT EXISTS { MS2W:"+CSid+" MS2W:published \"true\".}"
+                            + " NOT EXISTS { SCHO:"+CSid+" SCHO:published \"true\".}"
                             +"}";
             
             Query query = QueryFactory.create(query1, Syntax.syntaxARQ);
@@ -530,10 +599,10 @@ public class Jena {
 
         query1=queryPrefix +
                             "SELECT ?pf  WHERE { "
-                            + "?pf MS2W:hasPullHead MS2W:"+CSid+" ."
-                            +" MS2W:"+CSid+" MS2W:date ?date ."
+                            + "?pf SCHO:hasPullHead SCHO:"+CSid+" ."
+                            +" SCHO:"+CSid+" SCHO:date ?date ."
                             +" FILTER ( xsd:dateTime(?date) <= \"" +date+ "\"^^xsd:dateTime )"
-                          //  + " NOT EXISTS { MS2W:"+CSid+" MS2W:published \"true\".}"
+                          //  + " NOT EXISTS { SCHO:"+CSid+" SCHO:published \"true\".}"
                             +"}";
 
             Query query = QueryFactory.create(query1,Syntax.syntaxARQ);
