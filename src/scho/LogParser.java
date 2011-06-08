@@ -34,7 +34,7 @@ public class LogParser {
         }
         else
         {
-            cmd = "/usr/local/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n{author|email}\\n";
+            cmd = "/usr/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n{author|email}\\n";
         }
  
         try
