@@ -52,11 +52,10 @@ public class Main {
         System.out.println("DONE");
         long endTime = System.currentTimeMillis();
         System.out.println("Ontology population time (seconds):"+ (endTime-startTime)/1000);
-
-        //print project stats #commit #sites #merge #duration
         System.out.println("Number of site(s) = "+J.getSiteCount());
         System.out.println("Number of commit(s) = "+J.getCommitCount());
         System.out.println("Number of merge(s) = "+J.getMergeCount());
+        System.out.println("Number of author(s) = "+J.getAuthorCount());
         System.out.println("===========");
 
         startTime = System.currentTimeMillis();

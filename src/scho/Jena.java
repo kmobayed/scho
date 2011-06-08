@@ -114,6 +114,7 @@ public class Jena {
         }
 
         this.addLiteralStatement(schoUri+C.getChgSetID(), schoUri+"date", C.getDate());
+        this.addLiteralStatement(schoUri+C.getChgSetID(), schoUri+"author", C.getAuthorEmail());
     }
 
     public void publishChangeSet(ChangeSet C)
@@ -219,7 +220,29 @@ public class Jena {
         return count;
     }
 
-        public int getMergeCount()
+    public int getAuthorCount()
+    {
+        String query1;
+        int count=0;
+        QueryExecution qe1;
+        query1=queryPrefix +
+			"SELECT  (COUNT ( DISTINCT ?author ) AS ?count) WHERE { "
+			+"{?commit SCHO:author ?author} "
+			+"}";
+
+        qe1 = QueryExecutionFactory.create(query1, Syntax.syntaxARQ, data);
+        for (ResultSet rs1 = qe1.execSelect() ; rs1.hasNext() ; )
+        {
+            QuerySolution binding1 = rs1.nextSolution();
+            Literal site1=((Literal) binding1.get("count"));
+            count=site1.getInt();
+
+        }
+        qe1.close();
+        return count;
+    }
+
+    public int getMergeCount()
     {
         String query1;
         int count=0;

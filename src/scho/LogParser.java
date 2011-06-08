@@ -18,7 +18,7 @@ public class LogParser {
     {
         String CSid = null;
         String tmpP = null;
-        String message = null;
+        String author_email = null;
         String date = null;
         String err = null;
         ChangeSet CS = null;
@@ -29,12 +29,12 @@ public class LogParser {
         
         if (gitLog)
         {
-            cmd = "git log --abbrev-commit --parents  --pretty=format:%h%n%p%n%ci";
+            cmd = "git log --abbrev-commit --parents  --pretty=format:%h%n%p%n%ci%n%ae";
 
         }
         else
         {
-            cmd = "/usr/local/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n";
+            cmd = "/usr/local/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n{author|email}\\n";
         }
  
         try
@@ -99,6 +99,10 @@ public class LogParser {
                     } catch (ParseException ex) {
                         Logger.getLogger(LogParser.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                if ((author_email=stdInput.readLine()) != null)
+                {
+                    CS.setAuthorEmail(author_email);
                 }
                 J.addChangeSet(CS);
             }

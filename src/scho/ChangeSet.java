@@ -9,9 +9,9 @@ public class ChangeSet {
     private String PullFeed;
     private ArrayList<String> previousChgSetID;
     private String diff;
-    private String message;
     private String date;
     private String site;
+    private String author_email;
     private boolean published;
 
     public ChangeSet(String id) {
@@ -77,12 +77,12 @@ public class ChangeSet {
         return diff;
     }
 
-    public void setMessage(String str) {
-        message=str;
+    public void setAuthorEmail(String str) {
+        author_email=str;
     }
 
-    public String getMessage() {
-        return message;
+    public String getAuthorEmail() {
+        return author_email;
     }
 
     public void setSite(String str) {
