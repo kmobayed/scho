@@ -103,6 +103,7 @@ public class Main {
             System.out.println("Divergence awareness at " + cal.getTime().toString());
             int RM=0;
             int LM=0;
+            int published=0;
             // calculate divergence at time t
             for (ChangeSet o : AL2)
             {
@@ -113,7 +114,8 @@ public class Main {
                     {
                         o.publish();
                         J.publishChangeSet(o);
-                        System.out.println("published : "+o.getChgSetID());
+                        //System.out.println("published : "+o.getChgSetID());
+                        published++;
                     }
                     else
                     {
@@ -122,7 +124,7 @@ public class Main {
                             if (J.isPullHead(o,cal.getTime())) //pull head
                             {
                                 //publish parents
-                                System.out.println("remotely modified: "+o.getChgSetID());
+                                //System.out.println("remotely modified: "+o.getChgSetID());
                                 RM++;
                                 Date D2=sdf1.parse(J.getNextCS(o.getChgSetID()).get(0).getDate());
                                 if (D2.before(cal.getTime()))
@@ -133,13 +135,13 @@ public class Main {
                             }
                             else
                             {
-                                System.out.println("remotely modified: "+o.getChgSetID());
+                                //System.out.println("remotely modified: "+o.getChgSetID());
                                 RM++;
                             }
                         }
                         else
                         {
-                            System.out.println("locally modified: "+ o.getChgSetID());
+                            //System.out.println("locally modified: "+ o.getChgSetID());
                             LM++;
                         }
                     }
@@ -149,11 +151,12 @@ public class Main {
                         more = false;
                     }
                 }
-                else System.out.println("published : "+o.getChgSetID());
+                else published++;//System.out.println("published : "+o.getChgSetID());
             }
 
             if (RM>0) System.out.println("Remotely Modified = "+RM);
             if (LM>0) System.out.println("Locally Modified = "+LM);
+            if (published>0) System.out.println("Published = "+published);
             if (LM==0 && RM==0) System.out.println("Up-to-date");
 //            if (logoutput.equalsIgnoreCase("debug"))
 //            {
