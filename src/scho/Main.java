@@ -58,9 +58,11 @@ public class Main {
         System.out.println("Number of author(s) = "+J.getAuthorCount());
         System.out.println("===========");
 
+        System.out.print("Calculating divergence awareness ... ");
         startTime = System.currentTimeMillis();
         Main.calculateDA(J,args);
         endTime = System.currentTimeMillis();
+        System.out.println("DONE");
         System.out.println("Divergence awareness calcualtion time (seconds):"+ (endTime-startTime)/1000);
         //J.dump();
         J.close();
@@ -100,10 +102,10 @@ public class Main {
         while (more)
         {
             AL2=J.getCStillDate(cal.getTime());
-            System.out.println("Divergence awareness at " + cal.getTime().toString());
+//            System.out.println("Divergence awareness at " + cal.getTime().toString());
             int RM=0;
             int LM=0;
-            int published=0;
+//            int published=0;
             // calculate divergence at time t
             for (ChangeSet o : AL2)
             {
@@ -115,7 +117,7 @@ public class Main {
                         o.publish();
                         J.publishChangeSet(o);
                         //System.out.println("published : "+o.getChgSetID());
-                        published++;
+//                        published++;
                     }
                     else
                     {
@@ -151,13 +153,13 @@ public class Main {
                         more = false;
                     }
                 }
-                else published++;//System.out.println("published : "+o.getChgSetID());
+//                else published++;//System.out.println("published : "+o.getChgSetID());
             }
 
-            if (RM>0) System.out.println("Remotely Modified = "+RM);
-            if (LM>0) System.out.println("Locally Modified = "+LM);
-            if (published>0) System.out.println("Published = "+published);
-            if (LM==0 && RM==0) System.out.println("Up-to-date");
+//            if (RM>0) System.out.println("Remotely Modified = "+RM);
+//            if (LM>0) System.out.println("Locally Modified = "+LM);
+//            if (published>0) System.out.println("Published = "+published);
+//            if (LM==0 && RM==0) System.out.println("Up-to-date");
 //            if (logoutput.equalsIgnoreCase("debug"))
 //            {
             rec2 = new LogRecord(Level.INFO,cal.getTime().getTime()+"\t"+LM+"\t"+RM);
