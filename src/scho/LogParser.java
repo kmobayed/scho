@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class LogParser {
 
-    public void Parse(Jena J, boolean gitLog)
+    public void Parse(Jena J, int logType)
     {
         String CSid = null;
         String tmpP = null;
@@ -25,18 +25,25 @@ public class LogParser {
         Site S = null;
         PullFeed PF = null;
         Integer count=0;
-        String cmd;
+        String cmd="";
         
-        if (gitLog)
+        if (logType==Main.GIT_LOG)
         {
             cmd = "git log --abbrev-commit --parents  --pretty=format:%h%n%p%n%ci%n%ae";
 
         }
-        else
+        
+        if (logType==Main.Mercurial_LOG)
         {
             cmd = "/usr/bin/hg log  --debug --template {rev}:{node}\\n{parents}\\n{date|isodatesec}\\n{author|email}\\n";
         }
- 
+
+        if (logType==Main.Bazaar_LOG)
+        {
+            // bzr log --show-ids --xml
+            cmd = "cat bzr.log";
+        }
+
         try
         {
             Process p = Runtime.getRuntime().exec(cmd);
@@ -45,7 +52,7 @@ public class LogParser {
             while ((CSid = stdInput.readLine()) != null)
             {
                 count++;
-                if (!gitLog) CSid=CSid.split(":")[1];
+                if (logType==Main.Mercurial_LOG) CSid=CSid.split(":")[1];
 
                 CS=new ChangeSet("CS"+CSid);
                 
@@ -55,11 +62,12 @@ public class LogParser {
                     parents=tmpP.split(" ");
                     for (int i =0; i<parents.length; i++)
                     {
-                        if (parents[i].equals("-1:0000000000000000000000000000000000000000")) parents[i]="";
+                        if (parents[i].equals("-1:0000000000000000000000000000000000000000"))
+                                      parents[i]="";
 
                         if (!parents[i].isEmpty()) 
                         {
-                            if (!gitLog) parents[i]=parents[i].split(":")[1];
+                            if (logType==Main.Mercurial_LOG) parents[i]=parents[i].split(":")[1];
                             CS.addPreviousChgSet("CS" + parents[i]);
                         }
                     }

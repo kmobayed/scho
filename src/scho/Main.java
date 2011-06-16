@@ -15,8 +15,9 @@ import java.util.logging.Logger;
 
 public class Main {
 
-    public static final boolean GIT_LOG=true;
-    public static final boolean Mercurial_LOG=false;
+    public static final int GIT_LOG=1;
+    public static final int Mercurial_LOG=2;
+    public static final int Bazaar_LOG=3;
     public static final String dateFormatLog="yyyy-MM-dd HH:mm:ss Z";
     public static final String dateFormatJena="yyyy-MM-dd'T'HH:mm:ss'Z'";
 
@@ -39,12 +40,15 @@ public class Main {
         
         if (logtype.equalsIgnoreCase("git"))
         {
-            G.Parse(J,GIT_LOG);
-            
+            G.Parse(J,GIT_LOG);    
         }
-        else
+        if (logtype.equalsIgnoreCase("mercurial"))
         {
             G.Parse(J,Mercurial_LOG);
+        }
+        if (logtype.equalsIgnoreCase("bazaar"))
+        {
+            G.Parse(J,Bazaar_LOG);
         }
         System.out.println("DONE");
         System.out.print("Adding PushFeeds ... ");
