@@ -67,18 +67,18 @@ public class xmlParse {
                             addChangeSet(el);
 
                             //merge
-                            NodeList mergeNode = el.getElementsByTagName("merge");
-                            if(mergeNode != null && mergeNode.getLength() > 0) {
-                                    Element el2 = (Element)mergeNode.item(0);
-                                    NodeList mergedCS = el2.getElementsByTagName("log");
-                                    if(mergedCS != null && mergedCS.getLength() > 0) {
-                                        for(int j = 0 ; j < mergedCS.getLength();j++) {
-                                            Element e2 = (Element)mergedCS.item(j);
-                                            addChangeSet(e2);
-                                        }
-
-                                    }
-                            }
+//                            NodeList mergeNode = el.getElementsByTagName("merge");
+//                            if(mergeNode != null && mergeNode.getLength() > 0) {
+//                                    Element el2 = (Element)mergeNode.item(0);
+//                                    NodeList mergedCS = el2.getElementsByTagName("log");
+//                                    if(mergedCS != null && mergedCS.getLength() > 0) {
+//                                        for(int j = 0 ; j < mergedCS.getLength();j++) {
+//                                            Element e2 = (Element)mergedCS.item(j);
+//                                            addChangeSet(e2);
+//                                        }
+//
+//                                    }
+//                            }
                     }
             }
     }
@@ -117,12 +117,12 @@ public class xmlParse {
 
         cs.setAuthorEmail(getTextValue(el,"committer"));
 
-        NodeList parents = el.getElementsByTagName("parents");
+        NodeList parents = el.getElementsByTagName("parent");
         if(parents != null && parents.getLength() > 0) {
-            for(int i = 0 ; i < parents.getLength();i++) {
+            for(int i = 0 ; i < Math.min(2,parents.getLength());i++) {
 
             Element el1 = (Element)parents.item(i);
-            String parentID = getTextValue(el1,"parent");
+            String parentID = el1.getFirstChild().getNodeValue();
             try {
             m = MessageDigest.getInstance("MD5");
             m.reset();
