@@ -65,7 +65,7 @@ public class Main {
 
         System.out.print("Calculating divergence awareness ... ");
         startTime = System.currentTimeMillis();
-        //Main.calculateDA(J,args);
+        Main.calculateDA(J,args);
         endTime = System.currentTimeMillis();
         System.out.println("DONE");
         System.out.println("Divergence awareness calcualtion time (seconds):"+ (endTime-startTime)/1000);
