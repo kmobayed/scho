@@ -41,12 +41,13 @@ public class Jena {
     public Jena(String DB)
     {
         DBdirectory=DB;
-        //ontoFile=onto;
         data = TDBFactory.createModel(DBdirectory);
-        data.removeAll();
-        //data.read(ontoFile,"RDF/XML");
     }
 
+    public void clean()
+    {
+        data.removeAll();
+    }
     public void close()
     {
         data.close();
@@ -240,6 +241,13 @@ public class Jena {
         }
         qe1.close();
         return count;
+    }
+
+        public long getTripleCount()
+    {
+
+        return data.size();
+        
     }
 
     public int getMergeCount()

@@ -33,7 +33,7 @@ public class Main {
         String DBdirectory = args[0] ;
         LogParser G = new LogParser();
         Jena J= new Jena(DBdirectory);
-
+        //J.clean();
         System.out.print("Loading ChangeSets and adding PullFeeds ... ");
         String logtype= args[2];
 
@@ -56,6 +56,7 @@ public class Main {
         System.out.println("DONE");
         long endTime = System.currentTimeMillis();
         System.out.println("Ontology population time (seconds):"+ (endTime-startTime)/1000);
+        System.out.println("Number of triple(s) = "+J.getTripleCount());
         System.out.println("Number of site(s) = "+J.getSiteCount());
         System.out.println("Number of commit(s) = "+J.getCommitCount());
         System.out.println("Number of merge(s) = "+J.getMergeCount());
@@ -64,7 +65,7 @@ public class Main {
 
         System.out.print("Calculating divergence awareness ... ");
         startTime = System.currentTimeMillis();
-        Main.calculateDA(J,args);
+        //Main.calculateDA(J,args);
         endTime = System.currentTimeMillis();
         System.out.println("DONE");
         System.out.println("Divergence awareness calcualtion time (seconds):"+ (endTime-startTime)/1000);
